@@ -17,6 +17,21 @@ canvas.addEventListener("mousemove", (event) => {
 });
 
 const drawCircle = () => {
+  // check if the ball hit the floor
+  if (
+    circleX >= groundX - radius &&
+    circleX <= groundX + 200 + radius &&
+    circleY >= groundY - radius &&
+    circleY <= groundY + radius
+  ) {
+    if (ySpeed > 0) {
+      circleY -= 40;
+    } else {
+      circleY += 40;
+    }
+    ySpeed *= -1;
+  }
+
   // check if the ball hit the wall
   // right wall and left wall
   if (circleX >= canvasWidth - radius || circleX <= radius) {
