@@ -10,11 +10,36 @@ let ySpeed = 20;
 let groundX = 100;
 let groundY = 500;
 let groundHeight = 5;
+let brickArray = [];
 
 // add mouse move event within canvas element
 canvas.addEventListener("mousemove", (event) => {
   groundX = event.clientX;
 });
+
+class Brick {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 50;
+    this.height = 50;
+    brickArray.push(this);
+  }
+
+  drawBrick() {
+    canvasContext.fillStyle = "lightgreen";
+    canvasContext.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
+const getRandomBrick = (min, max) => {
+  return min + Math.floor(Math.random() * (max - min));
+};
+
+// prepare all the coordinators of bricks
+for (let i = 0; i < 10; i++) {
+  new Brick(getRandomBrick(0, 950), getRandomBrick(0, 550));
+}
 
 const drawCircle = () => {
   // check if the ball hit the floor
@@ -49,6 +74,11 @@ const drawCircle = () => {
   // reset canvas background
   canvasContext.fillStyle = "black";
   canvasContext.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // draw all bricks
+  brickArray.forEach((brick) => {
+    brick.drawBrick();
+  });
 
   // draw movable floor
   canvasContext.fillStyle = "lightBlue";
