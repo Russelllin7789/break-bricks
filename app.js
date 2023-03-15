@@ -11,6 +11,7 @@ let groundX = 100;
 let groundY = 500;
 let groundHeight = 5;
 let brickArray = [];
+let count = 0;
 
 // add mouse move event within canvas element
 canvas.addEventListener("mousemove", (event) => {
@@ -24,11 +25,21 @@ class Brick {
     this.width = 50;
     this.height = 50;
     brickArray.push(this);
+    this.visible = true;
   }
 
   drawBrick() {
     canvasContext.fillStyle = "lightgreen";
     canvasContext.fillRect(this.x, this.y, this.width, this.height);
+  }
+
+  touchingBall(ballX, ballY) {
+    return (
+      ballX >= this.x - radius &&
+      ballX <= this.x + this.width + radius &&
+      ballY >= this.y - radius &&
+      ballY <= this.y + this.height + radius
+    );
   }
 }
 
@@ -42,6 +53,24 @@ for (let i = 0; i < 10; i++) {
 }
 
 const drawCircle = () => {
+  // check if the ball hit bricks
+  brickArray.forEach((brick) => {
+    if (brick.visible && brick.touchingBall(circleX, circleY)) {
+      count++;
+      brick.visible = false;
+      if (circleY >= brick.y + brick.height || circleY <= brick.y) {
+        ySpeed *= -1;
+      } else if (circleX >= brick.x + brick.width || circleX <= brick.x) {
+        xSpeed *= -1;
+      }
+    }
+  });
+
+  if (count === 10) {
+    alert("Good game!");
+    clearInterval(game);
+  }
+
   // check if the ball hit the floor
   if (
     circleX >= groundX - radius &&
@@ -77,7 +106,9 @@ const drawCircle = () => {
 
   // draw all bricks
   brickArray.forEach((brick) => {
-    brick.drawBrick();
+    if (brick.visible) {
+      brick.drawBrick();
+    }
   });
 
   // draw movable floor
